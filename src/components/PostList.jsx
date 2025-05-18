@@ -3,37 +3,25 @@ import Modal from "./Modal";
 import NewPost from "./NewPost";
 import Post from "./Post";
 import styles from "./PostList.module.css";
-function PostList({isPosting, onStopPosting}) {
-  
-  const [enteredPosts, setEnteredPosts] = useState("");
-  const [author, setAuthor] = useState("");
-  
-  const hasContent = enteredPosts.trim().length > 0 || author.trim().length > 0;
- 
-  function bodyChangeHandler(event) {
-    setEnteredPosts(event.target.value);
+function PostList({ isPosting, onStopPosting }) {
+  const [posts, setPosts] = useState([]);
+  function addPostHandler(postData) {
+    setPosts((prevPosts) => [...prevPosts, postData]);
   }
-
-  function authorChangeHandler(event) {
-    console.log(event.target.value);
-    setAuthor(event.target.value);
-  }
-
   return (
     <>
-    {isPosting && (
-      <Modal onClose={onStopPosting}>
-        <NewPost
-          onBodyChange={bodyChangeHandler}
-          onAuthorChange={authorChangeHandler}
-        />
-
-      </Modal> )}
-        {hasContent && (
-          <ul className={styles.posts}>
-            <Post author={author} body={enteredPosts} />
-          </ul>
-        )}
+      {isPosting && (
+        <Modal onClose={onStopPosting}>
+          <NewPost onCloseModal={onStopPosting} onAddPost={addPostHandler} />
+        </Modal>
+      )}
+      {
+        <ul className={styles.posts}>
+          {posts.map((post, i) => (
+            <Post key={i} author={post.author} body={post.body} />
+          ))}
+        </ul>
+      }
     </>
   );
 }
