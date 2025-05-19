@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import Modal from "./Modal";
-import NewPost from "./NewPost";
 import Post from "./Post";
 import styles from "./PostList.module.css";
 
-function PostList({ isPosting, onStopPosting }) {
+function PostList() {
   const [posts, setPosts] = useState([]);
 
   function addPostHandler(postData) {
@@ -20,7 +18,6 @@ function PostList({ isPosting, onStopPosting }) {
       body: JSON.stringify(postData),
     })
       .then((response) => {
-
         setPosts((prevPosts) => [...prevPosts, postData]);
       })
       .catch((error) => {
@@ -47,11 +44,6 @@ function PostList({ isPosting, onStopPosting }) {
 
   return (
     <>
-      {isPosting && (
-        <Modal onClose={onStopPosting}>
-          <NewPost onCloseModal={onStopPosting} onAddPost={addPostHandler} />
-        </Modal>
-      )}
       {posts.length > 0 ? (
         <ul className={styles.posts}>
           {posts.map((post) => (
