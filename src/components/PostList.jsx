@@ -1,13 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import NewPost from "./NewPost";
 import Post from "./Post";
 import styles from "./PostList.module.css";
+
 function PostList({ isPosting, onStopPosting }) {
   const [posts, setPosts] = useState([]);
+
   function addPostHandler(postData) {
-    setPosts((prevPosts) => [...prevPosts, postData]);
+    createPosts(postData);
   }
+
+  function createPosts(postData) {
+    fetch("http://localhost:3001/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => {
+
+        setPosts((prevPosts) => [...prevPosts, postData]);
+      })
+      .catch((error) => {
+        alert("Erro ao criar postagem");
+      });
+  }
+
+  async function fetchPosts() {
+    try {
+      const response = await fetch("http://localhost:3001/posts");
+      if (!response.ok) {
+        throw new Error("Erro ao buscar postagens");
+      }
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
     <>
       {isPosting && (
@@ -15,13 +52,15 @@ function PostList({ isPosting, onStopPosting }) {
           <NewPost onCloseModal={onStopPosting} onAddPost={addPostHandler} />
         </Modal>
       )}
-      {
+      {posts.length > 0 ? (
         <ul className={styles.posts}>
-          {posts.map((post, i) => (
-            <Post key={i} author={post.author} body={post.body} />
+          {posts.map((post) => (
+            <Post key={post.id} author={post.author} body={post.body} />
           ))}
         </ul>
-      }
+      ) : (
+        <h2 style={{ textAlign: "center", color: "#888" }}>Nenhuma postagem encontrada.</h2>
+      )}
     </>
   );
 }
