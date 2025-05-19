@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./NewPost.module.css";
 import Modal from "../components/Modal";
 
-function NewPost({ onAddPost, onCloseModal }) {
+function NewPost({ onAddPost }) {
   const [enteredPosts, setEnteredPosts] = useState("");
   const [author, setAuthor] = useState("");
 
@@ -26,7 +27,7 @@ function NewPost({ onAddPost, onCloseModal }) {
   }
 
   return (
-    <Modal onClose={onCloseModal}>
+    <Modal>
       <form className={styles.form} onSubmit={submitHandler}>
         <p>
           <label htmlFor="body">Postagem</label>
@@ -42,9 +43,9 @@ function NewPost({ onAddPost, onCloseModal }) {
           />
         </p>
         <p className={styles.actions}>
-          <button type="button" onClick={onCloseModal}>
+          <Link type="button" to="..">
             Cancelar
-          </button>
+          </Link>
           <button type="submit">Adicionar</button>
         </p>
       </form>
