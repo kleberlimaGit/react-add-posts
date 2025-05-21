@@ -3,16 +3,6 @@ import styles from "./NewPost.module.css";
 import Modal from "../components/Modal";
 
 function NewPost() {
-  function submitHandler(event) {
-    event.preventDefault();
-    const postData = {
-      id: Date.now(),
-      body: enteredPosts,
-      author: author,
-    };
-    onAddPost(postData);
-  }
-
   return (
     <Modal>
       <Form method="POST" className={styles.form}>
@@ -40,7 +30,7 @@ export default NewPost;
 export async function action({ request }) {
   const formData = await request.formData();
   const postData = Object.fromEntries(formData);
-  postData.id = Date.now();
+  postData.id = Date.now().toString();
   await fetch("http://localhost:3001/posts", {
     method: "POST",
     headers: {
