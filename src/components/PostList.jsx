@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useLoaderData } from "react-router-dom";
 import Post from "./Post";
 import styles from "./PostList.module.css";
 
 function PostList() {
-  const [posts, setPosts] = useState([]);
+  const posts = useLoaderData();
 
   function addPostHandler(postData) {
     createPosts(postData);
@@ -24,23 +25,6 @@ function PostList() {
         alert("Erro ao criar postagem");
       });
   }
-
-  async function fetchPosts() {
-    try {
-      const response = await fetch("http://localhost:3001/posts");
-      if (!response.ok) {
-        throw new Error("Erro ao buscar postagens");
-      }
-      const data = await response.json();
-      setPosts(data);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   return (
     <>
